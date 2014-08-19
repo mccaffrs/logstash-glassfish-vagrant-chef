@@ -1,0 +1,33 @@
+input {
+  file {
+    type => "glassfish-server"
+    path => "/opt/glassfish4/glassfish/domains/domain1/logs/server.log"
+    sincedb_path => "/opt/glassfish4/"
+    start_position => "beginning"
+  }
+
+  file {
+    type => "apache-error"
+    path => "/var/log/apache2/error.log"
+    sincedb_path => "/opt/logstash-<%= node[:logstash][:version] %>/sincedb.db2"
+    start_position => "beginning"
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "%{DATA:message}" }
+  }
+  date {
+  match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+  }
+}
+
+output {
+#  stdout { }
+  redis {
+    host => "192.168.1.200"
+    data_type => "list"
+    key => "logstash"
+  }
+}

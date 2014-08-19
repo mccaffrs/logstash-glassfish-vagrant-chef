@@ -1,0 +1,1 @@
+{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/stephen.mccaffrey/Projects/logstash-glassfish-vagrant-chef","disabled":false},"v-csc-2":{"id":"v-csc-2","guestpath":"/tmp/vagrant-chef-4/chef-solo-1/cookbooks","hostpath":"C:/Users/stephen.mccaffrey/Projects/logstash-glassfish-vagrant-chef/cookbooks","disabled":false}}}

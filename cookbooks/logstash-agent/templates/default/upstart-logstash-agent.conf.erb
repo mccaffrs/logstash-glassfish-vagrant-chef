@@ -1,0 +1,27 @@
+# This file is managed by Chef
+# Any changes made by hand will be overwritten
+
+# Note, you need a 'logstash' user on your machine to run this script.
+# logstash upstart init script
+# this should log to /var/log/upstart/logstash.log
+# elasticsearch_server: 127.0.0.1:9200
+
+description     "logstash agent instance"
+
+setuid logstash
+setgid adm
+
+start on virtual-filesystems or runlevel [2345]
+stop on runlevel [!2345]
+
+# Respawn it if the process exits
+respawn
+respawn limit 5 30
+limit nofile 65550 65550
+
+# /opt/logstash-1.4.2/bin/logstash agent --verbose -f, --config /etc/logstash-1.4.2/agent.conf
+
+exec /opt/logstash-<%= node[:logstash][:version] %>/bin/logstash agent --verbose -f, --config /etc/logstash-<%= node[:logstash][:version] %>/agent.conf --log /var/log/logstash-agent/logstash.log
+
+
+

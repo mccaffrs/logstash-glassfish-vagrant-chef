@@ -1,0 +1,30 @@
+ # GF spits out multiline logs, but each log entry starts with [#|YYYY
+    multiline {
+        type => "app-gf-server"
+        pattern => "\[\#\|\d{4}"
+        negate => true
+        what => "previous"
+    }
+
+    # Parse what we can from the log file.
+    grok {
+        type => "app-gf-server"
+        pattern => "(?m)\[\#\|%{TIMESTAMP_ISO8601:timestamp}\|%{LOGLEVEL:loglevel}\|%{DATA:server_version}\|%{JAVACLASS:category}\|%{DATA:kv}\|%{DATA:message}\|\#\]"
+        named_captures_only => true
+        singles => true
+    }
+
+    # Parse the log timestamp into the event timestamp
+    date {
+        type => "app-gf-server"
+        match => [ "timestamp", "ISO8601" ]
+    }
+
+    # Split the context field of the log line. This puts things like _ThreadID as a field.
+    kv {
+        type => "app-gf-server"
+        exclude_tags => "_grokparsefailure"
+        source => "kv"
+        field_split => ";"
+        value_split => "="
+    }
